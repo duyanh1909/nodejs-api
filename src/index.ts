@@ -1,16 +1,7 @@
 import express from 'express';
-
+import api from './api';
 const app = express();
-const port = "3000"
-
-app.get("/api/hello", (req, res) => {
-    res.send({ message: "Hello World!" });
-}); 
-
-app.post("/api/hello", (req, res) => {
-    res.send({ message: "Post!"});
-});
-
-app.listen(port, () => {
-    console.log(`Server is listening on port ${port}`);
-});
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+app.use("/api", api)
+export default app;
