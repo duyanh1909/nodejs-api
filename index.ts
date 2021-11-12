@@ -15,14 +15,10 @@ const connectDB = async () => {
     process.exit(1)
   }
 }
-
 connectDB()
 
 app.use("/", src);
 
-
 app.listen(port, () => {
     console.log(`Server is listening on port ${port}`);
 });
-
-
