@@ -2,12 +2,11 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 const ProductSchema = new Schema({
-  id:  Number,
   nameProduct: String,
   color:   String,
   mic: Boolean,
   idCategory: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Category',
   },
   price: Number,
