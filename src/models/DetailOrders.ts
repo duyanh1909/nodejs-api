@@ -10,6 +10,7 @@ const DetailOrderSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Order'
     },
+    quanlity: Number,
     price: Number,
 }, {versionKey: false});
 

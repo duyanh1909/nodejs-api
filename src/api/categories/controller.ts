@@ -8,9 +8,11 @@ class categoryController {
             try {
                 const category = await categories.findOne({_id: id});
                 if (category) {
-                    return res.send({ data: category });
+                    res.send({ data: category });
                 }
-                return res.send({message: "Not have category!!!"});
+                else {
+                    res.send({message: "Not have category!!!"});
+                }
             }
             catch {
                 return res.send({message: "Category not found!!!"});
@@ -25,7 +27,9 @@ class categoryController {
                 if (category) {
                     res.send({ data: category});
                 }
-                return res.send({message: "Not have category!!!"});
+                else {
+                    res.send({message: "Not have category!!!"});
+                }
             }
             catch {
                 return res.send({message: "Category not found!!!"});

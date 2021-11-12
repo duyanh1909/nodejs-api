@@ -8,5 +8,6 @@ router
     .post("/", controller.create())
     .delete("/:id", controller.delete())
     .post("/add", controller.add())
+    .put("/update/:id", controller.update())
     .delete("/remove/:id", controller.remove())
 export default router;
