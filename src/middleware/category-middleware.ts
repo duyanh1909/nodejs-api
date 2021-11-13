@@ -13,3 +13,11 @@ export const categoriesExist =  async (req, res, next) => {
         return res.send({ message: "Not found category" });
     }
 };
+
+export const emptyEntryCategory = (req, res, next) => {
+    let error = new Array();
+    if (req.body.nameCategory == '') {
+        error.push("Name is required");
+    }
+    next();
+}

@@ -16,7 +16,7 @@ export const productsExist =  async (req, res, next) => {
 
 export const emptyEntryProduct = (req, res, next) => {
     let error = new Array();
-    if (req.body.name == ''){
+    if (req.body.nameProduct == ''){
         error.push("Name is required");
     }
     if (req.body.color == ''){
