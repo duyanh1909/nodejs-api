@@ -3,7 +3,7 @@ import products from '../../models/Products';
 import detailOrders from '../../models/DetailOrders';
 
 class orderController {
-    private totalPriceOrder (arr){
+    private totalPriceOrder (arr) {
         let total = 0;
         for (let i = 0; i < arr.length; i++) {
             total += arr[i].price * arr[i].quanlity;
@@ -11,18 +11,27 @@ class orderController {
         return total;
     }
 
+    private async updateProductFromDeleteOrder (arr) {
+        for (let i = 0; i < arr.length; i++) {
+            let id = arr[i].idProduct;
+            let quanlity = arr[i].quanlity;
+            let product = await products.findOne({ _id: id });
+            let updateProduct = await products.updateOne({_id: id }, { saled: product.saled - quanlity, quanlity: product.quanlity + quanlity });
+        }
+    }
+
     get() {
         return async (req, res) => {
             const id = req.params.id;
             try {
-                const detailOrder = await detailOrders.find({idOrder: id}).populate('idProduct');
+                const detailOrder = await detailOrders.find({ idOrder: id }).populate('idProduct');
                 if (detailOrder) {
                     return res.send({ data: detailOrder });
                 }
-                return res.send({message: "Not have order!!!"});
+                return res.send({ message: "Not have order!!!" });
             }
             catch {
-                return res.send({message: "order not found!!!"});
+                return res.send({ message: "order not found!!!" });
             }  
         };
     };
@@ -34,10 +43,10 @@ class orderController {
                 if (order) {
                     return res.send({ data: order });
                 }       
-                return res.send({message: "Not have order!!!"});    
+                return res.send({ message: "Not have order!!!" });    
             }
             catch {
-                return res.send({message: "order not found!!!"}); 
+                return res.send({ message: "order not found!!!" }); 
             }
         };
     };
@@ -45,21 +54,26 @@ class orderController {
     create() {
         return async (req, res) => {
             try {
-                const product = await products.findOne({_id: req.body.idProduct});
+                const product = await products.findOne({ _id: req.body.idProduct });
+                const quanlity = Number(req.body.quanlity);
                 if (!product) {
-                    res.send({ message: "No have product"})
+                    return res.send({ message: "No have product" });
                 }
-                const price = product.price;
-                const order = new orders({total: price * req.body.quanlity});
+                if (product.quanlity < quanlity) {
+                    return res.send({ message: "Out of stock" });
+                }
+                const order = new orders({ total: product.price * quanlity });
                 order.save();
                 req.body.idOrder = order._id;
-                req.body.price = price;
+                req.body.price = product.price;
                 const detailorder = new detailOrders(req.body);
                 detailorder.save();
+                console.log(product.saled + quanlity);
+                const updateProduct = await products.updateOne( {_id: req.body.idProduct }, { saled: product.saled + quanlity, quanlity: product.quanlity - quanlity });
                 res.send({ message: 'Create Successs' });
             }
             catch {
-                res.send({ message: "Create Fail"});
+                res.send({ message: "Create Fail" });
             }
         }
     };
@@ -67,22 +81,21 @@ class orderController {
     update() {
         return async (req, res) => {
             try {
-                const detailOrder = await detailOrders.findOne({ _id: req.params.id});
-                const order = await orders.findOne({ _id: detailOrder.idOrder});
-                if (req.body.idProduct != detailOrder.idProduct) {
-                    const product = await products.findOne({_id: req.body.idProduct});
-                    order.total = order.total - detailOrder.price * detailOrder.quanlity + product.price * req.body.quanlity;
+                const detailOrder = await detailOrders.findOne({ _id: req.params.id });
+                const product = await products.findOne({ _id: detailOrder.idProduct });
+                const quanlity = Number(req.body.quanlity);
+                if (product.quanlity < quanlity) {
+                    return res.send({ message: "Out of stock" });
                 }
-                else {
-                    order.total = order.total - detailOrder.price * detailOrder.quanlity + detailOrder.price * req.body.quanlity;
-                }
-                // order.total -= detailOrder.price * req.body.quanlity;
-                const deleteDetail = await detailOrders.updateOne({idProduct: req.body.idProduct, quanlity: req.body.quanlity});
-                const updateOder = await orders.updateOne(order);
-                res.send({message: "Remove Success"});
+                const order = await orders.findOne({ _id: detailOrder.idOrder });
+                order.total = order.total - detailOrder.price * detailOrder.quanlity + detailOrder.price * quanlity;
+                const updateDetail = await detailOrders.updateOne({ _id: req.params.id }, { idProduct: req.body.idProduct, quanlity: quanlity, lastUpdate: Date.now() });
+                const updateOder = await orders.updateOne({ _id: detailOrder.idOrder }, { total: order.total, lastUpdate: Date.now() });
+                const updateProduct = await products.updateOne( {_id: detailOrder.idProduct }, { saled: product.saled - detailOrder.quanlity + quanlity, quanlity: product.quanlity + detailOrder.quanlity - quanlity });
+                res.send({ message: "Update Success" });
             }
             catch {
-                res.send({ message: "Remove Fail"});
+                res.send({ message: "Update Fail" });
             }
         }
     }
@@ -90,15 +103,17 @@ class orderController {
     remove () {
         return async (req, res) => {
             try {
-                const detailOrder = await detailOrders.findOne({ _id: req.params.id});
+                const detailOrder = await detailOrders.findOne({ _id: req.params.id });
+                const product = await products.findOne({ _id: detailOrder.idProduct });
                 const order = await orders.findOne({ _id: detailOrder.idOrder});
                 order.total -= detailOrder.price * detailOrder.quanlity;
-                const deleteDetail = await detailOrders.deleteOne({_id: req.params.id });
-                const updateOder = await orders.updateOne(order);
-                res.send({message: "Remove Success"});
+                const deleteDetail = await detailOrders.deleteOne({ _id: req.params.id });
+                const updateOder = await orders.updateOne({ _id: detailOrder.idOrder }, { total: order.total, lastUpdate: Date.now() });
+                const updateProduct = await products.updateOne({_id: detailOrder.idProduct }, { saled: product.saled - detailOrder.quanlity, quanlity: product.quanlity + detailOrder.quanlity });
+                res.send({ message: "Remove Success" });
             }
             catch {
-                res.send({ message: "Remove Fail"});
+                res.send({ message: "Remove Fail" });
             }
         }
     };
@@ -107,12 +122,14 @@ class orderController {
         return async (req, res) => {
             const id = req.params.id;
             try {
-                const detailOrder = await detailOrders.deleteMany({ idOrder: id})
-                const order = await orders.deleteOne({ _id: id});
-                res.send({message: "Delete Success"});
+                const listDetailOrder = await detailOrders.find({ idOrder: id });
+                const detailOrder = await detailOrders.deleteMany({ idOrder: id });
+                const order = await orders.deleteOne({ _id: id });
+                this.updateProductFromDeleteOrder(listDetailOrder);
+                res.send({ message: "Delete Success" });
             }
             catch {
-                res.send({ message: "Delete Fail"});
+                res.send({ message: "Delete Fail" });
             }
         }
     };
@@ -120,20 +137,37 @@ class orderController {
     add () {
         return async (req, res) => {
             try {
-                const product = await products.findOne({_id: req.body.idProduct});
-                const price = product.price;
-                const detailOrder = new detailOrders({ idOrder: req.body.idOrder, idProduct: req.body.idProduct, price: price , quanlity: req.body.quanlity});
+                const product = await products.findOne({ _id: req.body.idProduct });
+                const quanlity = Number(req.body.quanlity);
+                if (product.quanlity < quanlity) {
+                    return res.send({ message: "Out of stock" });
+                }
+                const order = await orders.findOne({ _id: req.body.idOrder });
+                order.total += product.price * quanlity;
+                const detailOrder = new detailOrders({ idOrder: req.body.idOrder, idProduct: req.body.idProduct, price: product.price , quanlity: quanlity });
                 detailOrder.save();
-                const order = await orders.findOne({ _id: req.body.idOrder});
-                order.total += price * req.body.quanlity;
-                const updateOder = await orders.updateOne(order);
-                res.send({message: "Add Success"});
+                const updateOrder = await orders.updateOne({ _id: req.body.idOrder }, { total: order.total, lastUpdate: Date.now() })
+                const updateProduct = await products.updateOne( {_id: req.body.idProduct }, { saled: product.saled + quanlity, quanlity: product.quanlity - quanlity });
+                res.send({ message: "Add Success" });
             }
             catch {
-                res.send({ message: "Add Fail"});
+                res.send({ message: "Add Fail" });
             }
         }
     };
+
+    bill () {
+        return async (req, res) => {
+            try {
+                req.isBill = true;
+                const updateDetail = await orders.updateOne({ _id: req.params.id}, { isBill: true, lastUpdate: Date.now() });
+                res.send({ message: "Success Billing" })
+            }
+            catch {
+                res.send({ message: "Billing Fail"});
+            }
+        }
+    }
 };
 
 export default orderController;

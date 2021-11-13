@@ -9,7 +9,10 @@ const ProductSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category',
   },
+  quanlity: { type: Number, 'default': 0 },
+  saled: { type: Number, 'default': 0 },
   price: Number,
+  createOn: { type: Date, 'default': Date.now }
 }, {versionKey: false});
 
 const Product = mongoose.model('Product', ProductSchema)

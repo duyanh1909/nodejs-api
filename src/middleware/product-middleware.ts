@@ -1,17 +1,16 @@
-import categories from "../models/Categories";
+import products from "../models/Products";
 
-export const categoriesExist =  async (req, res, next) => {
-    const id = req.body.idCategory;
+export const productsExist =  async (req, res, next) => {
     try {
-        const category = await categories.findOne({_id: id});
-        console.log(category)
+        const id = req.body.idCategory;
+        const category = await products.findOne({_id: id});
         if (!category) {
-            return res.send({message: "No have category in DB"})
+            return res.send({message: "No have product in DB"});
         }
         next();
     }
     catch {
-        return;
+        return res.send({message: "Not found product"});
     }
 };
 

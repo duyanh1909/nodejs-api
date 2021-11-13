@@ -12,6 +12,8 @@ const DetailOrderSchema = new mongoose.Schema({
     },
     quanlity: Number,
     price: Number,
+    createdOn: { type: Date, 'default': Date.now },
+	lastUpdate: { type: Date, 'default': Date.now}
 }, {versionKey: false});
 
 const detailOrders = mongoose.model('DetailOrder', DetailOrderSchema)
