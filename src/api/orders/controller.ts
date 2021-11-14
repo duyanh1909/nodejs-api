@@ -68,7 +68,6 @@ class orderController {
                 req.body.price = product.price;
                 const detailorder = new detailOrders(req.body);
                 await detailorder.save();
-                console.log(product.saled + quanlity);
                 const updateProduct = await products.updateOne( {_id: req.body.idProduct }, { saled: product.saled + quanlity, quanlity: product.quanlity - quanlity });
                 res.send({ message: 'Create Successs' });
             }
