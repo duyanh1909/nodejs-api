@@ -2,9 +2,9 @@ import products from "../models/Products";
 
 export const productsExist =  async (req, res, next) => {
     try {
-        const id = req.body.idCategory;
-        const category = await products.findOne({_id: id});
-        if (!category) {
+        const id = req.body.idProduct || req.params.id;
+        const product = await products.findOne({_id: id});
+        if (!product) {
             return res.send({message: "No have product in DB"});
         }
         next();

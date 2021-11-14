@@ -2,9 +2,9 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 const OrderSchema = new mongoose.Schema({
-	total : Number,
+	total : { type: Number, required: true },
 	createdOn: { type: Date, 'default': Date.now },
-	isBill: { type: Boolean, 'default': false},
+	isBill: { type: Boolean, 'default': false, required: true },
 	lastUpdate: { type: Date, 'default': Date.now}
 }, {versionKey: false});
 

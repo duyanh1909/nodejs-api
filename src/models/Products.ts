@@ -1,17 +1,19 @@
 import mongoose from 'mongoose';
+
 const { Schema } = mongoose;
 
 const ProductSchema = new Schema({
-  nameProduct: String,
-  color:   String,
-  mic: Boolean,
+  nameProduct: { type: String, required: true },
+  color:   { type: String, required: true },
+  mic: { type: Boolean, required: true },
   idCategory: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category',
+    required: true
   },
-  quanlity: { type: Number, 'default': 0 },
-  saled: { type: Number, 'default': 0 },
-  price: Number,
+  quanlity: { type: Number, 'default': 0 , required: true },
+  saled: { type: Number, 'default': 0, required: true },
+  price: { type: Number, required: true },
   createOn: { type: Date, 'default': Date.now }
 }, {versionKey: false});
 

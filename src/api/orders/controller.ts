@@ -63,11 +63,11 @@ class orderController {
                     return res.send({ message: "Out of stock" });
                 }
                 const order = new orders({ total: product.price * quanlity });
-                order.save();
+                await order.save();
                 req.body.idOrder = order._id;
                 req.body.price = product.price;
                 const detailorder = new detailOrders(req.body);
-                detailorder.save();
+                await detailorder.save();
                 console.log(product.saled + quanlity);
                 const updateProduct = await products.updateOne( {_id: req.body.idProduct }, { saled: product.saled + quanlity, quanlity: product.quanlity - quanlity });
                 res.send({ message: 'Create Successs' });
@@ -145,7 +145,7 @@ class orderController {
                 const order = await orders.findOne({ _id: req.body.idOrder });
                 order.total += product.price * quanlity;
                 const detailOrder = new detailOrders({ idOrder: req.body.idOrder, idProduct: req.body.idProduct, price: product.price , quanlity: quanlity });
-                detailOrder.save();
+                await detailOrder.save();
                 const updateOrder = await orders.updateOne({ _id: req.body.idOrder }, { total: order.total, lastUpdate: Date.now() })
                 const updateProduct = await products.updateOne( {_id: req.body.idProduct }, { saled: product.saled + quanlity, quanlity: product.quanlity - quanlity });
                 res.send({ message: "Add Success" });

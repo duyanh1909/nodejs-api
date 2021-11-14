@@ -10,6 +10,6 @@ router
     .get("/", controller.find())
     .get("/:id", controller.get())
     .post("/", emptyEntryProduct, categoriesExist, controller.create())
-    .patch("/:id", productsExist, emptyEntryProduct, categoriesExist, controller.update())
+    .patch("/:id", productsExist, categoriesExist, controller.update())
     .delete("/:id", productsExist, controller.delete())
 export default router;

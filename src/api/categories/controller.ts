@@ -1,5 +1,4 @@
 import categories from "../../models/Categories";
-
 class categoryController {
     
     get() {
@@ -41,7 +40,7 @@ class categoryController {
         return async (req, res) => {
             try {
                 const category = new categories(req.body);
-                category.save();
+                await category.save();
                 res.send({ message: "Create Success" });
             }
             catch {

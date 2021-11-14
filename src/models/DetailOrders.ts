@@ -4,14 +4,16 @@ const { Schema } = mongoose;
 const DetailOrderSchema = new mongoose.Schema({
 	idProduct : {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product'
+        ref: 'Product',
+        required: true
     },
     idOrder:{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Order'
+        ref: 'Order',
+        required: true
     },
-    quanlity: Number,
-    price: Number,
+    quanlity: { type: Number, required: true },
+    price: { type: Number, required: true },
     createdOn: { type: Date, 'default': Date.now },
 	lastUpdate: { type: Date, 'default': Date.now}
 }, {versionKey: false});

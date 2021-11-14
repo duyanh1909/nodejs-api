@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 const CategorySchema = new Schema({
-  nameCategory: String,
+  nameCategory: { type: String, required: true },
   createOn: { type: Date, "default": Date.now }
 }, {versionKey: false});
 

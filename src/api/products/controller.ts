@@ -35,7 +35,7 @@ class productController {
         return async (req, res) => {
             try {
                 const product = new products(req.body);
-                product.save();
+                await product.save();
                 res.send({ message: 'Create Successs' });
             }
             catch {
