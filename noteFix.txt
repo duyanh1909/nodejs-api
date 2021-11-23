@@ -1,0 +1,27 @@
+Chỉnh sửa về dạng mindset hóa đơn.
+    Thêm, xóa: hóa đơn
+        Thêm 1 or nhiều đơn trả về mã hóa đơn.
+    1 hóa đơn là có nhiều chi tiết hóa đơn.
+        1 chi tiết hóa đơn là có 1 đơn hàng.
+Status trả về 200 Ok, 400 lỗi phản hồi, 500 lỗi server.
+
+{
+    data: [
+        {
+            product_id:
+            quantity:
+        },
+        {
+            product_id:
+            quantity:
+        },
+        {
+            product_id:
+            quantity:
+        },
+    ]
+}
+
+for (let i = 0; i < req.body.data.length; i++){
+    req.body.data[i]
+}

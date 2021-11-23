@@ -2,20 +2,27 @@ import mongoose from 'mongoose';
 
 const { Schema } = mongoose;
 
-const ProductSchema = new Schema({
-  nameProduct: { type: String, required: true },
-  color:   { type: String, required: true },
-  mic: { type: Boolean, required: true },
-  idCategory: {
+const productSchema = new Schema({
+  nameProduct: { type: String, required: [true, "nameProduct is required"] },
+  color:   { type: String, required: [true, "color is required"] },
+  mic: { type: Boolean, required: [true, "mic is required"] },
+  categoryId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category',
-    required: true
+    required: [true, "categoryId is required"]
   },
-  quanlity: { type: Number, 'default': 0 , required: true },
-  saled: { type: Number, 'default': 0, required: true },
-  price: { type: Number, required: true },
+  price: { type: Number, required: [true, "price is required"] },
   createOn: { type: Date, 'default': Date.now }
-}, {versionKey: false});
+}, {
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
+});
 
-const Product = mongoose.model('Product', ProductSchema)
+productSchema.virtual('category', {
+  ref: "Category",
+  localField: "categoryId",
+  foreignField: "_id",
+});
+
+const Product = mongoose.model('Product', productSchema)
 export default Product;

@@ -1,22 +1,36 @@
 import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
-const DetailOrderSchema = new mongoose.Schema({
-	idProduct : {
+const detailOrderSchema = new mongoose.Schema({
+	productId : {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Product',
         required: true
     },
-    idOrder:{
+    orderId:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Order',
         required: true
     },
-    quanlity: { type: Number, required: true },
+    quantity: { type: Number, required: true },
     price: { type: Number, required: true },
     createdOn: { type: Date, 'default': Date.now },
-	lastUpdate: { type: Date, 'default': Date.now}
-}, {versionKey: false});
+}, {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+});
 
-const detailOrders = mongoose.model('DetailOrder', DetailOrderSchema)
+detailOrderSchema.virtual('product', {
+    ref: "Product",
+    localField: "productId",
+    foreignField: "_id",
+});
+
+detailOrderSchema.virtual('order', {
+    ref: "Order",
+    localField: "orderId",
+    foreignField: "_id",
+});
+
+const detailOrders = mongoose.model('DetailOrder', detailOrderSchema)
 export default detailOrders;

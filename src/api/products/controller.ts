@@ -1,17 +1,21 @@
 import products from '../../models/Products';
+import { errorFormat } from '../../middleware/validateData'
 class productController {
     get() {
         return async (req, res) => {
             const id = req.params.id;
             try {
-                const product = await products.findOne({_id: id}).populate('idCategory');
+                const product = await products.findOne({_id: id}).populate('category');
                 if (product) {
-                    return res.send({ data: product });
+                    return res.status(200).send({ data: product });
                 }
-                return res.send({message: "Not have product!!!"});
+                return res.status(404).send({message: "Not have product!!!"});
             }
-            catch {
-                return res.send({message: "product not found!!!"});
+            catch(e) {
+                return res.status(404).send({ 
+                    message: "Something went wrong",
+                    debugInfo: errorFormat(e)
+                })
             }  
         };
     };
@@ -19,14 +23,17 @@ class productController {
     find() {
         return async (req, res) => {
             try {
-                const product = await products.find().populate('idCategory');
+                const product = await products.find().populate('category');
                 if (product) {
-                    return res.send({ data: product });
+                    return res.status(200).send({ data: product });
                 }       
-                return res.send({message: "Not have product!!!"});    
+                return res.status(404).send({message: "Not have product!!!"});    
             }
-            catch {
-                return res.send({message: "product not found!!!"}); 
+            catch(e) {
+                return res.status(404).send({ 
+                    message: "Something went wrong",
+                    debugInfo: errorFormat(e)
+                })
             }
         };
     };
@@ -36,10 +43,17 @@ class productController {
             try {
                 const product = new products(req.body);
                 await product.save();
-                res.send({ message: 'Create Successs' });
+                const id = product._id
+                res.status(200).send({ 
+                    message: "Create success",
+                    id: id 
+                });
             }
-            catch {
-                res.send({ message: "Create Fail"});
+            catch(e) {
+                return res.status(404).send({ 
+                    message: "Something went wrong",
+                    debugInfo: errorFormat(e)
+                })
             }
         }
     }
@@ -48,11 +62,23 @@ class productController {
         return async (req, res) => {
             const id = req.params.id;
             try {
-                const product = await products.updateOne({ _id: id}, req.body);
-                res.send({message: "Update Success"});
+                let product = await products.findOne({ _id: id });
+                product.nameProduct = req.body.nameProduct;
+                product.color = req.body.color;
+                product.mic = req.body.mic;
+                product.price = req.body.price;
+                product.categoryId = req.body.categoryId;
+                await product.save();
+                res.status(200).send({ 
+                    message: "Update success",
+                    id: id 
+                });
             }
-            catch {
-                res.send({ message: "Update Fail"});
+            catch(e) {
+                return res.status(404).send({ 
+                    message: "Something went wrong",
+                    debugInfo: errorFormat(e)
+                })
             }
         }
     }
@@ -62,10 +88,15 @@ class productController {
             const id = req.params.id;
             try {
                 const product = await products.deleteOne({ _id: id});
-                res.send({message: "Delete Success"});
+                res.status(200).send({ 
+                    message: "Delete success",
+                });
             }
-            catch {
-                res.send({ message: "Delete Fail"});
+            catch(e) {
+                return res.status(404).send({ 
+                    message: "Something went wrong",
+                    debugInfo: errorFormat(e)
+                })
             }
         }
     }

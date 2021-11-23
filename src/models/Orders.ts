@@ -1,12 +1,11 @@
 import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
-const OrderSchema = new mongoose.Schema({
-	total : { type: Number, required: true },
-	createdOn: { type: Date, 'default': Date.now },
-	isBill: { type: Boolean, 'default': false, required: true },
-	lastUpdate: { type: Date, 'default': Date.now}
-}, {versionKey: false});
+const orderSchema = new mongoose.Schema({
+	total : { type: Number, "default": 0, required: true },
+	createdOn: { type: Date, "default": Date.now },
+	isBill: { type: Boolean, "default": true, required: true },
+});
 
-const Orders = mongoose.model('Order', OrderSchema)
+const Orders = mongoose.model('Order', orderSchema)
 export default Orders;

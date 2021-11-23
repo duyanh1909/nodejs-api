@@ -1,4 +1,6 @@
 import categories from "../../models/Categories";
+import { errorFormat } from '../../middleware/validateData'
+
 class categoryController {
     
     get() {
@@ -7,14 +9,17 @@ class categoryController {
             try {
                 const category = await categories.findOne({_id: id});
                 if (category) {
-                    res.send({ data: category });
+                    res.status(200).send({ data: category });
                 }
                 else {
-                    res.send({message: "Not have category!!!"});
+                    res.status(404).send({message: "Not have category!!!"});
                 }
             }
-            catch {
-                return res.send({message: "Category not found!!!"});
+            catch(e) {
+                return res.status(404).send({ 
+                    message: "Something went wrong",
+                    debugInfo: errorFormat(e)
+                })
             }
         };
     };
@@ -24,14 +29,17 @@ class categoryController {
             try {
                 const category = await categories.find();
                 if (category) {
-                    res.send({ data: category});
+                    return res.status(200).send({ data: category});
                 }
                 else {
-                    res.send({message: "Not have category!!!"});
+                    return res.status(404).send({message: "Not have category!!!"});
                 }
             }
-            catch {
-                return res.send({message: "Category not found!!!"});
+            catch(e) {
+                return res.status(404).send({ 
+                    message: "Something went wrong",
+                    debugInfo: errorFormat(e)
+                })
             }
         };
     };
@@ -41,10 +49,13 @@ class categoryController {
             try {
                 const category = new categories(req.body);
                 await category.save();
-                res.send({ message: "Create Success" });
+                res.status(200).send({ message: category._id });
             }
-            catch {
-                res.send({ message: "Fail"});
+            catch(e) {
+                return res.status(404).send({ 
+                    message: "Something went wrong",
+                    debugInfo: errorFormat(e)
+                })
             }
         }
     }
@@ -53,11 +64,20 @@ class categoryController {
         return async (req, res) => {
             const id = req.params.id;
             try {
-                const category = await categories.updateOne({ _id: id}, req.body);
-                res.send({message: "Update Success"});
+                let category = await categories.findOne({ _id: id });
+                category.nameCategory = req.body.nameCategory;
+                category.brand = req.body.brand;
+                await category.save();
+                res.status(200).send({ 
+                    message: "Update success",
+                    id: id 
+                });
             }
-            catch {
-                res.send({ message: "Fail"});
+            catch(e) {
+                return res.status(404).send({ 
+                    message: "Something went wrong",
+                    debugInfo: errorFormat(e)
+                })
             }
         }
     }
@@ -67,10 +87,13 @@ class categoryController {
             const id = req.params.id;
             try {
                 const category = await categories.deleteOne({ _id: id});
-                res.send({message: "Delete Success"});
+                res.status(200).send({message: "Delete Success"});
             }
-            catch {
-                res.send({ message: "Delete Fail"});
+            catch(e) {
+                return res.status(404).send({ 
+                    message: "Something went wrong",
+                    debugInfo: errorFormat(e)
+                })
             }
         }
     }
