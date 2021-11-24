@@ -25,16 +25,16 @@ class orderController {
         return async (req, res) => {
             const id = req.params.id;
             try {
-                const detailOrder = await detailOrders.find({ idOrder: id }).populate('product');
+                const detailOrder = await detailOrders.find({ orderId: id }).populate('product');
                 if (detailOrder) {
                     return res.status(200).send({ data: detailOrder });
                 }
-                return res.status(404).send({ message: "Not have order!!!" });
+                return res.status(404).send({ message: "Not have order" });
             }
-            catch(e) {
+            catch(err) {
                 return res.status(404).send({ 
                     message: "Something went wrong",
-                    debugInfo: errorFormat(e)
+                    debugInfo: errorFormat(err)
                 })
             }
         };
@@ -47,12 +47,12 @@ class orderController {
                 if (order) {
                     return res.status(200).send({ data: order });
                 }       
-                return res.status(404).send({ message: "Not have order!!!" });    
+                return res.status(404).send({ message: "Not have order" });    
             }
-            catch(e) {
+            catch(err) {
                 return res.status(404).send({ 
                     message: "Something went wrong",
-                    debugInfo: errorFormat(e)
+                    debugInfo: errorFormat(err)
                 })
             }
         };
@@ -65,10 +65,10 @@ class orderController {
     //             await order.save();
     //             res.status(200).send({ message: order._id });
     //         }
-    //         catch(e) {
+    //         catch(err) {
     //             return res.status(404).send({ 
     //                 message: "Something went wrong",
-    //                 debugInfo: errorFormat(e)
+    //                 debugInfo: errorFormat(err)
     //             })
     //         }
     //     }
@@ -77,7 +77,7 @@ class orderController {
     create() {
         return async (req, res) => {
             try {
-                const order = new orders();
+                const order = new orders({ userId: req.user._id });
                 await order.save();
                 let total = 0;
                 let listDetailOrder = new Array();
@@ -96,10 +96,10 @@ class orderController {
                         total += product.price * quantity;
                         listDetailOrder.push(detailOrder._id)
                     }
-                    catch(e) {
+                    catch(err) {
                         return res.status(404).send({ 
                             message: "Something went wrong",
-                            debugInfo: errorFormat(e)
+                            debugInfo: errorFormat(err)
                         })
                     }
                 }
@@ -110,10 +110,10 @@ class orderController {
                     listDetailOrder: listDetailOrder 
                 });
             }
-            catch(e) {
+            catch(err) {
                 return res.status(404).send({ 
                     message: "Something went wrong",
-                    debugInfo: errorFormat(e)
+                    debugInfo: errorFormat(err)
                 })
             }
         }

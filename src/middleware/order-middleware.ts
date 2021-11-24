@@ -60,6 +60,22 @@ export const listProductExist =  async (req, res, next) => {
     next();
 };
 
+export const checkUserDetailOrder =  async (req, res, next) => {
+    try {
+        if (req.user.userType == 'admin') {
+            return next();
+        }
+        const order = await orders.findOne({ _id: req.params.id })
+        if (req.user._id != order.userId) {
+            return res.status(403).send({message: "You don't have permission"});
+        }
+        next();
+    }
+    catch {
+        return res.status(403).send({ message: "You don't have permission" });
+    }
+}; 
+
 // export const checkDetailIsBill =  async (req, res, next) => {
 //     try {
 //         const id = req.params.id;

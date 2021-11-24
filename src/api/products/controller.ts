@@ -9,12 +9,12 @@ class productController {
                 if (product) {
                     return res.status(200).send({ data: product });
                 }
-                return res.status(404).send({message: "Not have product!!!"});
+                return res.status(404).send({message: "Not have product"});
             }
-            catch(e) {
+            catch(err) {
                 return res.status(404).send({ 
                     message: "Something went wrong",
-                    debugInfo: errorFormat(e)
+                    debugInfo: errorFormat(err)
                 })
             }  
         };
@@ -27,12 +27,12 @@ class productController {
                 if (product) {
                     return res.status(200).send({ data: product });
                 }       
-                return res.status(404).send({message: "Not have product!!!"});    
+                return res.status(404).send({message: "Not have product"});    
             }
-            catch(e) {
+            catch(err) {
                 return res.status(404).send({ 
                     message: "Something went wrong",
-                    debugInfo: errorFormat(e)
+                    debugInfo: errorFormat(err)
                 })
             }
         };
@@ -49,10 +49,10 @@ class productController {
                     id: id 
                 });
             }
-            catch(e) {
+            catch(err) {
                 return res.status(404).send({ 
                     message: "Something went wrong",
-                    debugInfo: errorFormat(e)
+                    debugInfo: errorFormat(err)
                 })
             }
         }
@@ -74,10 +74,10 @@ class productController {
                     id: id 
                 });
             }
-            catch(e) {
+            catch(err) {
                 return res.status(404).send({ 
                     message: "Something went wrong",
-                    debugInfo: errorFormat(e)
+                    debugInfo: errorFormat(err)
                 })
             }
         }
@@ -92,10 +92,10 @@ class productController {
                     message: "Delete success",
                 });
             }
-            catch(e) {
+            catch(err) {
                 return res.status(404).send({ 
                     message: "Something went wrong",
-                    debugInfo: errorFormat(e)
+                    debugInfo: errorFormat(err)
                 })
             }
         }

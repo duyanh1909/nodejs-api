@@ -5,15 +5,17 @@ const detailOrderSchema = new mongoose.Schema({
 	productId : {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Product',
-        required: true
+        trim:true, 
+        required: [true, "productId is required"]
     },
     orderId:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Order',
-        required: true
+        trim:true,
+        required: [true, "orderId is required"]
     },
-    quantity: { type: Number, required: true },
-    price: { type: Number, required: true },
+    quantity: { type: Number, required: [true, "quantity is required"] },
+    price: { type: Number, required: [true, "price is required"] },
     createdOn: { type: Date, 'default': Date.now },
 }, {
     toJSON: { virtuals: true },

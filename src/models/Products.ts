@@ -3,12 +3,13 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 const productSchema = new Schema({
-  nameProduct: { type: String, required: [true, "nameProduct is required"] },
-  color:   { type: String, required: [true, "color is required"] },
+  nameProduct: { type: String, trim:true, required: [true, "nameProduct is required"] },
+  color:   { type: String, trim:true, required: [true, "color is required"] },
   mic: { type: Boolean, required: [true, "mic is required"] },
   categoryId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category',
+    trim:true, 
     required: [true, "categoryId is required"]
   },
   price: { type: Number, required: [true, "price is required"] },

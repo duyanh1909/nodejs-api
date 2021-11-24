@@ -12,13 +12,13 @@ class categoryController {
                     res.status(200).send({ data: category });
                 }
                 else {
-                    res.status(404).send({message: "Not have category!!!"});
+                    res.status(404).send({message: "Not have category"});
                 }
             }
-            catch(e) {
+            catch(err) {
                 return res.status(404).send({ 
                     message: "Something went wrong",
-                    debugInfo: errorFormat(e)
+                    debugInfo: errorFormat(err)
                 })
             }
         };
@@ -32,13 +32,13 @@ class categoryController {
                     return res.status(200).send({ data: category});
                 }
                 else {
-                    return res.status(404).send({message: "Not have category!!!"});
+                    return res.status(404).send({message: "Not have category"});
                 }
             }
-            catch(e) {
+            catch(err) {
                 return res.status(404).send({ 
                     message: "Something went wrong",
-                    debugInfo: errorFormat(e)
+                    debugInfo: errorFormat(err)
                 })
             }
         };
@@ -51,10 +51,10 @@ class categoryController {
                 await category.save();
                 res.status(200).send({ message: category._id });
             }
-            catch(e) {
+            catch(err) {
                 return res.status(404).send({ 
                     message: "Something went wrong",
-                    debugInfo: errorFormat(e)
+                    debugInfo: errorFormat(err)
                 })
             }
         }
@@ -73,10 +73,10 @@ class categoryController {
                     id: id 
                 });
             }
-            catch(e) {
+            catch(err) {
                 return res.status(404).send({ 
                     message: "Something went wrong",
-                    debugInfo: errorFormat(e)
+                    debugInfo: errorFormat(err)
                 })
             }
         }
@@ -89,10 +89,10 @@ class categoryController {
                 const category = await categories.deleteOne({ _id: id});
                 res.status(200).send({message: "Delete Success"});
             }
-            catch(e) {
+            catch(err) {
                 return res.status(404).send({ 
                     message: "Something went wrong",
-                    debugInfo: errorFormat(e)
+                    debugInfo: errorFormat(err)
                 })
             }
         }

@@ -1,18 +1,13 @@
 import express from 'express';
 import OrderController from './controller'
-import {productsExist} from '../../middleware/product-middleware';
-import {orderExist, detailOrderExist, listProductExist} from '../../middleware/order-middleware';
+// import {productsExist} from '../../middleware/product-middleware';
+import {orderExist, detailOrderExist, checkUserDetailOrder, listProductExist} from '../../middleware/order-middleware';
+import {authenticate, authorize} from './../../middleware/auth'
 
 const router = express.Router();
 const controller = new OrderController();
 router
-    .get("/", controller.find())
-    .get("/:id", orderExist, controller.get())
-    .post("/", controller.create())
-    // .post("/:id", orderExist, detailOrderExist, listProductExist, controller.createDetailOrder())
-    // .delete("/:id", checkIsBill, controller.delete())
-    // .post("/add", checkIsBill, productsExist, controller.add())
-    // .patch("/update/:id", controller.update())
-    // .delete("/remove/:id", controller.remove())
-    // .patch("/bill/:id", controller.bill())
+    .get("/", authenticate, authorize, controller.find())
+    .get("/:id", authenticate, orderExist, checkUserDetailOrder, controller.get())
+    .post("/", authenticate, controller.create())
 export default router;
